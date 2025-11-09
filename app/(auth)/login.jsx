@@ -9,9 +9,6 @@ import {
   signInWithCredential,
 } from "firebase/auth";
 
-
-
-
 import * as WebBrowser from "expo-web-browser";
 import * as Google from "expo-auth-session/providers/google";
 
@@ -23,9 +20,9 @@ const Login = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  
   const [request, response, promptAsync] = Google.useAuthRequest({
-    webClientId: "834956824285-hgh7tqe2ak1qeppuru8c498u4gmobq49.apps.googleusercontent.com"
+    webClientId:
+      "834956824285-hgh7tqe2ak1qeppuru8c498u4gmobq49.apps.googleusercontent.com",
   });
 
   useEffect(() => {
@@ -71,44 +68,49 @@ const Login = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Welcome Back</Text>
 
-      <TextInput
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-        style={styles.input}
-        autoCapitalize="none"
-      />
+      {/* CARD */}
+      <View style={styles.card}>
+        <Text style={styles.title}>Welcome Back</Text>
 
-      <TextInput
-        placeholder="Password"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-        style={styles.input}
-      />
+        <TextInput
+          placeholder="Email"
+          value={email}
+          onChangeText={setEmail}
+          style={styles.input}
+          autoCapitalize="none"
+        />
 
-      {error ? <Text style={styles.error}>{error}</Text> : null}
+        <TextInput
+          placeholder="Password"
+          secureTextEntry
+          value={password}
+          onChangeText={setPassword}
+          style={styles.input}
+        />
 
-      <TouchableOpacity style={styles.btn} onPress={handleLogin}>
-        <Text style={styles.btnText}>
-          {loading ? "Logging in..." : "Log In"}
-        </Text>
-      </TouchableOpacity>
+        {error ? <Text style={styles.error}>{error}</Text> : null}
 
-      {/* ✅ Google Login Button */}
-      <TouchableOpacity
-        style={styles.googleBtn}
-        onPress={() => promptAsync()}
-        disabled={!request}
-      >
-        <Text style={styles.btnText}>Continue with Google</Text>
-      </TouchableOpacity>
+        <TouchableOpacity style={styles.btn} onPress={handleLogin}>
+          <Text style={styles.btnText}>
+            {loading ? "Logging in..." : "Log In"}
+          </Text>
+        </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => router.push("/register")}>
-        <Text style={styles.link}>Don't have an account? Sign up</Text>
-      </TouchableOpacity>
+        {/* Google Button */}
+        <TouchableOpacity
+          style={styles.googleBtn}
+          onPress={() => promptAsync()}
+          disabled={!request}
+        >
+          <Text style={styles.btnText}>Continue with Google</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={() => router.push("/register")}>
+          <Text style={styles.link}>Don't have an account? Sign up</Text>
+        </TouchableOpacity>
+      </View>
+
     </View>
   );
 };
@@ -116,28 +118,75 @@ const Login = () => {
 export default Login;
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: "center", padding: 20 },
-  title: { fontSize: 26, fontWeight: "bold", marginBottom: 25, textAlign: "center" },
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
+    backgroundColor: "#f2f2f2",
+  },
+
+  card: {
+    backgroundColor: "white",
+    width: "100%",
+    padding: 25,
+    borderRadius: 15,
+
+    // Shadow
+    elevation: 5,
+    shadowColor: "#000",
+    shadowOpacity: 0.15,
+    shadowRadius: 7,
+    shadowOffset: { width: 0, height: 4 },
+
+    marginHorizontal: 20,
+  },
+
+  title: {
+    fontSize: 26,
+    fontWeight: "bold",
+    marginBottom: 25,
+    textAlign: "center",
+  },
+
   input: {
     borderWidth: 1,
     borderColor: "#ccc",
     padding: 12,
-    marginVertical: 5,
+    marginVertical: 6,
     borderRadius: 8,
+    backgroundColor: "#fafafa",
   },
+
   btn: {
     backgroundColor: "#007AFF",
     padding: 14,
     borderRadius: 8,
     marginTop: 15,
   },
+
   googleBtn: {
     backgroundColor: "#DB4437",
     padding: 14,
     borderRadius: 8,
     marginTop: 15,
   },
-  btnText: { color: "white", textAlign: "center", fontWeight: "600" },
-  link: { marginTop: 10, textAlign: "center", color: "#007AFF" },
-  error: { color: "red", marginTop: 10, textAlign: "center" },
+
+  btnText: {
+    color: "white",
+    textAlign: "center",
+    fontWeight: "600",
+  },
+
+  link: {
+    marginTop: 10,
+    textAlign: "center",
+    color: "#007AFF",
+  },
+
+  error: {
+    color: "red",
+    marginTop: 10,
+    textAlign: "center",
+  },
 });

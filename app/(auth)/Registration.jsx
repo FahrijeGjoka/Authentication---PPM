@@ -1,32 +1,32 @@
-import { StyleSheet, Text, View, TextInput, Modal } from 'react-native'
-import React, { useState } from 'react'
-import { TouchableOpacity } from 'react-native'
-import { router } from 'expo-router'
-import { auth } from "../../firebase"
-import { createUserWithEmailAndPassword } from "firebase/auth"
+import { StyleSheet, Text, View, TextInput, Modal } from 'react-native';
+import React, { useState } from 'react';
+import { TouchableOpacity } from 'react-native';
+import { router } from 'expo-router';
+import { auth } from "../../firebase";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 
 const Register = () => {
-    const [email, setEmail] = useState("")
-    const [password, setPassword] = useState("")
-    const [confirmPassword, setConfirmPassword] = useState("")
-    const [error, setError] = useState("")
-    const [modalVisible, setModalVisible] = useState(false)
-    const [loading, setLoading] = useState(false)
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const [error, setError] = useState("");
+    const [modalVisible, setModalVisible] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const validateInputs = () => {
         if (!email || !password || !confirmPassword) {
-            setError("All fields are required")
+            setError("All fields are required");
             return false;
         }
 
         const emailRegex = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
         if (!emailRegex.test(email)) {
-            setError("Email is not valid")
+            setError("Email is not valid");
             return false;
         }
 
         if (password.length < 6) {
-            setError("Password must be at least 6 characters")
+            setError("Password must be at least 6 characters");
             return false;
         }
 
@@ -35,72 +35,76 @@ const Register = () => {
             return false;
         }
 
-        setError("")
+        setError("");
         return true;
-    }
+    };
 
     const handleSignup = async () => {
         if (!validateInputs()) return;
 
-        setLoading(true)
+        setLoading(true);
         try {
             await createUserWithEmailAndPassword(auth, email, password);
-            setModalVisible(true)
-
+            setModalVisible(true);
         } catch (error) {
             if (error.code === "auth/email-already-in-use") {
-                setError("Email is already registered")
+                setError("Email is already registered");
             } else {
-                setError(error.message)
+                setError(error.message);
             }
         } finally {
-            setLoading(false)
+            setLoading(false);
         }
-    }
+    };
 
     const handleModalClose = () => {
         setModalVisible(false);
         router.push("/login");
-    }
+    };
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Create an Account</Text>
+            
+            {/* CARD */}
+            <View style={styles.card}>
+                <Text style={styles.title}>Create an Account</Text>
 
-            <TextInput
-                placeholder='Email'
-                value={email}
-                onChangeText={setEmail}
-                style={styles.input}
-                autoCapitalize='none'
-            />
+                <TextInput
+                    placeholder='Email'
+                    value={email}
+                    onChangeText={setEmail}
+                    style={styles.input}
+                    autoCapitalize='none'
+                />
 
-            <TextInput
-                placeholder='Password'
-                value={password}
-                onChangeText={setPassword}
-                style={styles.input}
-                secureTextEntry
-            />
+                <TextInput
+                    placeholder='Password'
+                    value={password}
+                    onChangeText={setPassword}
+                    style={styles.input}
+                    secureTextEntry
+                />
 
-            <TextInput
-                placeholder='Confirm Password'
-                value={confirmPassword}
-                onChangeText={setConfirmPassword}
-                style={styles.input}
-                secureTextEntry
-            />
+                <TextInput
+                    placeholder='Confirm Password'
+                    value={confirmPassword}
+                    onChangeText={setConfirmPassword}
+                    style={styles.input}
+                    secureTextEntry
+                />
 
-            {error ? <Text style={styles.error}>{error}</Text> : null}
+                {error ? <Text style={styles.error}>{error}</Text> : null}
 
-            <TouchableOpacity style={styles.btn} onPress={handleSignup}>
-                <Text style={styles.btnText}>{loading ? "Creating account..." : "Create Account"}</Text>
-            </TouchableOpacity>
+                <TouchableOpacity style={styles.btn} onPress={handleSignup}>
+                    <Text style={styles.btnText}>{loading ? "Creating..." : "Create Account"}</Text>
+                </TouchableOpacity>
 
-            <TouchableOpacity onPress={() => router.push("/login")}>
-                <Text style={styles.link}>Already have an account? Log in</Text>
-            </TouchableOpacity>
+                <TouchableOpacity onPress={() => router.push("/(auth)/login")}>
+                    <Text style={styles.link}>Already have an account? Log in</Text>
+                </TouchableOpacity>
+            </View>
 
+            {/* MODAL */}
             <Modal visible={modalVisible} transparent animationType="fade">
                 <View style={styles.modalOverlay}>
                     <View style={styles.modalBox}>
@@ -109,64 +113,112 @@ const Register = () => {
                         <TouchableOpacity onPress={handleModalClose} style={styles.modalBtnContainer}>
                             <Text style={styles.modalBtn}>OK</Text>
                         </TouchableOpacity>
-
                     </View>
                 </View>
             </Modal>
-        </View>
-    )
-}
 
-export default Register
+        </View>
+    );
+};
+
+export default Register;
 
 const styles = StyleSheet.create({
-    container: { flex: 1, justifyContent: "center", padding: 20 },
-    title: { fontSize: 26, fontWeight: "bold", marginBottom: 25, textAlign: "center" },
+    container: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        padding: 20,
+        backgroundColor: "#f2f2f2",
+    },
+
+    card: {
+        backgroundColor: "white",
+        width: "100%",
+        padding: 25,
+        borderRadius: 15,
+
+        // Shadow i butë
+        elevation: 5,
+        shadowColor: "#000",
+        shadowOpacity: 0.15,
+        shadowRadius: 7,
+        shadowOffset: { width: 0, height: 4 },
+
+        marginHorizontal: 20,
+    },
+
+    title: {
+        fontSize: 26,
+        fontWeight: "bold",
+        marginBottom: 25,
+        textAlign: "center"
+    },
+
     input: {
         borderWidth: 1,
         borderColor: "#ccc",
         padding: 12,
-        marginVertical: 5,
-        borderRadius: 8
+        marginVertical: 6,
+        borderRadius: 8,
+        backgroundColor: "#fafafa"
     },
+
     btn: {
         backgroundColor: "#007AFF",
         padding: 14,
         borderRadius: 8,
         marginTop: 15
     },
-    btnText: { color: "white", textAlign: "center", fontWeight: "600" },
-    link: { marginTop: 10, textAlign: "center", color: "#007AFF" },
-    error: { color: "red", marginTop: 10, textAlign: "center" },
+
+    btnText: {
+        color: "white",
+        textAlign: "center",
+        fontWeight: "600"
+    },
+
+    link: {
+        marginTop: 10,
+        textAlign: "center",
+        color: "#007AFF"
+    },
+
+    error: {
+        color: "red",
+        marginTop: 10,
+        textAlign: "center"
+    },
+
     modalOverlay: {
         flex: 1,
         backgroundColor: "rgba(0,0,0,0.5)",
         justifyContent: "center",
         alignItems: "center"
     },
+
     modalBox: {
         backgroundColor: "white",
-        borderRadius: 8,
-        padding: 20,
+        padding: 25,
+        borderRadius: 12,
         width: "80%",
-        minHeight: 180,
-        justifyContent: "space-between",
         alignItems: "center"
     },
+
     modalTitle: {
         fontSize: 18,
         fontWeight: "bold",
-        marginBottom: 10
+        marginBottom: 15
     },
+
     modalBtnContainer: {
-        marginTop: 15,
         backgroundColor: "#007AFF",
         paddingVertical: 10,
-        paddingHorizontal: 20,
+        paddingHorizontal: 25,
         borderRadius: 8
     },
+
     modalBtn: {
         color: "white",
         fontWeight: "600"
     }
-})
+});
