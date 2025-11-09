@@ -106,7 +106,7 @@ const Login = () => {
           <Text style={styles.btnText}>Continue with Google</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => router.push("/register")}>
+        <TouchableOpacity onPress={() => router.push("/(auth)/Registration")}>
           <Text style={styles.link}>Don't have an account? Sign up</Text>
         </TouchableOpacity>
       </View>
